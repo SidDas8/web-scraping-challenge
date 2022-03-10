@@ -25,9 +25,6 @@ def scrape():
     # Scrape news title and news paragraph text
     newstitle = soup.find('div', class_='content_title').text
     paragraphtext = soup.find('div', class_='article_teaser_body').text
-
-    print(f"Title: {newstitle}")
-    print(f"Text: {paragraphtext}")
     
     
     # JPL Mars Space Images - Featured Image
@@ -47,9 +44,7 @@ def scrape():
     imageurl = soup2.find('img', class_='fancybox-image')['src']
 
     # Concatenate complete url
-    featuredimageurl = url2 + imageurl
-
-    print(featuredimageurl)
+    featuredimageurl = url2 + imageurl    
     
     
     # Mars Facts
@@ -65,7 +60,7 @@ def scrape():
     # Use pandas to convert the data to a HTML table string
     htmltable = marstable.to_html()
     
-    
+
     # Mars Hemispheres
     # Set up the Mars Hemispheres images to be scraped
     url4 = 'https://marshemispheres.com/'
@@ -91,3 +86,25 @@ def scrape():
 
         # Scrape the title for each hemisphere
         title_list.append(hemisphere.find('h3').text)
+    
+    # Create list of dictionaries for hemisphere titles and image urls
+    hemisphere_data = []
+
+    # Append dictionaries to list using loop
+    for each in range(len(hemispheres)):
+        hemisphere_data.append({"title": title_list[each], "fullsize_url": fullsize_img_urls[each]})
+    
+        
+    # Store Mars data in a dictionary
+    mars_data_dictionary = {
+        "news_title": newstitle,
+        "paragraph_text": paragraphtext,
+        "featured_image_url": featuredimageurl,
+        "html_table": htmltable,
+        "hemisphere_data": hemisphere_data
+    }
+    
+    # Close the browser after scraping
+    browser.quit()
+    
+    return mars_data_dictionary
