@@ -7,16 +7,19 @@ from splinter import Browser
 from bs4 import BeautifulSoup as bs
 from webdriver_manager.chrome import ChromeDriverManager
 
-# Setup splinter
-executable_path = {'executable_path': ChromeDriverManager().install()}
-browser = Browser('chrome', **executable_path, headless=False)
-
 def scrape_info():
+
+    # Setup splinter
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=False)
     
     # Mars News
     # Set up the Mars News Site to be scraped
     url = 'https://redplanetscience.com/'
     browser.visit(url)
+
+    # Wait for website to load
+    time.sleep(2)
 
     # Create BeautifulSoup object; parse with 'html.parser'
     html = browser.html
@@ -32,6 +35,9 @@ def scrape_info():
     # Set up the Mars Space image to be scraped
     url2 = 'https://spaceimages-mars.com/'
     browser.visit(url2)
+
+    # Wait for website to load
+    time.sleep(2)
 
     # Click on button to see full size image
     browser.links.find_by_partial_text('FULL IMAGE').click()
@@ -66,19 +72,22 @@ def scrape_info():
     url4 = 'https://marshemispheres.com/'
     browser.visit(url4)
 
+    # Wait for website to load
+    time.sleep(2)
+
     # Create BeautifulSoup object; parse with 'html.parser'
     html4 = browser.html
     soup4 = bs(html4, 'html.parser')
     
     # Find the 'item' class for each hemisphere
-    classitems = soup4.find_all('div', class_='item')
+    hemispheres = soup4.find_all('div', class_='item')
 
     # Lists for HTML scrape
     hemisphere_url_list = []
     title_list = []
 
     # Loop through the 4 'item' classes
-    for hemisphere in classitems:
+    for hemisphere in hemispheres:
 
         # Scrape the link for each hemisphere website
         img_url = hemisphere.find('a')['href']
@@ -86,6 +95,23 @@ def scrape_info():
 
         # Scrape the title for each hemisphere
         title_list.append(hemisphere.find('h3').text)
+
+    # List for fullsize image urls
+    fullsize_img_urls = []
+
+    # Loop through hemisphere urls list
+    for url in hemisphere_url_list:
+        
+        # Visit each website
+        browser.visit(url)
+        
+        # Create BeautifulSoup object; parse with 'html.parser'
+        html5 = browser.html
+        soup5 = bs(html5, 'html.parser')
+        
+        # Find the 'wide-image' class for each hemisphere
+        imagelinks = soup5.find('img', class_='wide-image')['src']
+        fullsize_img_urls.append(url4 + imagelinks)
     
     # Create list of dictionaries for hemisphere titles and image urls
     hemisphere_data = []
