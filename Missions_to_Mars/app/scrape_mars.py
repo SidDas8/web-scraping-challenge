@@ -11,7 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 executable_path = {'executable_path': ChromeDriverManager().install()}
 browser = Browser('chrome', **executable_path, headless=False)
 
-def scrape():
+def scrape_info():
     
     # Mars News
     # Set up the Mars News Site to be scraped
