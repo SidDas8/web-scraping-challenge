@@ -34,6 +34,11 @@
                 <h2>Mars Featured Image</h2>
                 <img src = "{{mars_db.featured_image_url}}">
             </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                <h2>Mars Facts</h2>
+                <table>{{mars_db.html_table|safe}}</table>
+            </div>
         </div>
     </div>
 
